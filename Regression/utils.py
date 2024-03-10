@@ -63,20 +63,23 @@ def gen_data(y_type, params, seed):
     elif y_type == 'multivariate':
 
         # Сгенерируем значения факторов и форму зависимости y от регрессоров
-        means = [params['x1_mean'], params['x2_mean']]
+        means = [params['x1_mean'], params['x2_mean'], params['x3_mean']]
 
         # Вычислим наполнение матрицы ковариаций 
         var_1 = params['x1_std']**2
         var_2 = params['x2_std']**2
+        var_3 = params['x3_std']**2
 
         cov_12 = params['corr_12'] * params['x1_std'] * params['x2_std']
-        
+        cov_13 = params['corr_13'] * params['x1_std'] * params['x3_std']
+        cov_23 = params['corr_23'] * params['x2_std'] * params['x3_std']
         
         # Сгененрируем требующуюся выборку
         X = np.random.multivariate_normal(
             mean=means,
-            cov=[[var_1, cov_12],
-                 [cov_12, var_2]],
+            cov=[[var_1, cov_12, cov_13],
+                 [cov_12, var_2, cov_23],
+                 [cov_13, cov_23, var_3]],
             size=params['N']
         )
 
@@ -87,10 +90,11 @@ def gen_data(y_type, params, seed):
         y = params['beta0'] \
             + params['beta1'] * X[:, 0] \
             + params['beta2'] * X[:, 1] \
+            + params['beta3'] * X[:, 2] \
             + e
 
         # Для удобства сохраним вектора в pandas dataframe
-        dataset = pd.DataFrame({'x1': X[:, 0], 'x2': X[:, 1], 'e': e, 'y': y})
+        dataset = pd.DataFrame({'x1': X[:, 0], 'x2': X[:, 1], 'x3': X[:, 2], 'e': e, 'y': y})
 
     # Генерация датасета для симуляции изменения какого-то параметра, например, размера выборки
     elif y_type == 'simul':
@@ -216,7 +220,7 @@ def train_model(dataset, target, feature_names, show_results=False, pairwise=Fal
     X = sm.add_constant(dataset[feature_names])
     
     # Зафитим модель на данные. y - наша целевая переменная, X - матрица факторов
-    model = sm.OLS(dataset[target], X).fit()
+    model = sm.OLS(dataset[target], X).fit(cov_type='HC0')
     
     dataset[f'{target}_hat'] = model.fittedvalues
     dataset['residuals'] = model.resid
@@ -228,7 +232,7 @@ def train_model(dataset, target, feature_names, show_results=False, pairwise=Fal
         # Выведем графики с результатами модели
         plot_data(dataset, target, feature_names, plot_type='model', pairwise=pairwise, model=model)
         
-    # # Выведем саммари по тестам
+    # Выведем саммари по тестам
     if return_norm_tests:
         display(norm_distr_check(
             (dataset['residuals'] - np.mean(dataset['residuals']))\
