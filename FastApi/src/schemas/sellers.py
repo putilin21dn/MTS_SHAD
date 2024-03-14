@@ -16,7 +16,7 @@ class BaseSeller(BaseModel):
 class IncomingSeller(BaseSeller):
     password: str
 
-    @field_validator("email")  
+    @field_validator("email")
     @staticmethod
     def validate_email(val: int):
         if not validate_email(val):

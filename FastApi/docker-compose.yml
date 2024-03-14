@@ -7,7 +7,7 @@ services:
       dockerfile: docker/postgres/Dockerfile
     restart: always
     ports:
-      - "5445:5432"
+      - "5446:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres

@@ -25,6 +25,7 @@ async def create_book(
         title=book.title,
         author=book.author,
         year=book.year,
+        seller_id=book.seller_id,
         count_pages=book.count_pages,
     )
     session.add(new_book)
@@ -66,11 +67,13 @@ async def delete_book(book_id: int, session: DBSession):
 @books_router.put("/{book_id}")
 async def update_book(book_id: int, new_data: ReturnedBook, session: DBSession):
     # Оператор "морж", позволяющий одновременно и присвоить значение и проверить его.
+    
     if updated_book := await session.get(Book, book_id):
         updated_book.author = new_data.author
         updated_book.title = new_data.title
         updated_book.year = new_data.year
         updated_book.count_pages = new_data.count_pages
+        updated_book.seller_id = new_data.seller_id
 
         await session.flush()
 

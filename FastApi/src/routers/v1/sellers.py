@@ -80,7 +80,7 @@ async def update_seller(
     new_data: ReturnedSeller,
     session: DBSession,
 ):
-    
+
     if updated_seller := await session.get(Seller, seller_id):
         updated_seller.first_name = new_data.first_name
         updated_seller.last_name = new_data.last_name

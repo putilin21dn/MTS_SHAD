@@ -13,9 +13,9 @@ async def test_create_seller(async_client):
     response = await async_client.post("/api/v1/seller/", json=data)
 
     assert response.status_code == status.HTTP_201_CREATED
-
+    # print(type(response))
     result_data = response.json()
-
+    # print(result_data)
     assert result_data == {"first_name": "Robert", "last_name": "Martin", "email": "qew@123.com", "id": 6}
 
 
@@ -57,8 +57,6 @@ async def test_get_single_seller(db_session, async_client):
     book = books.Book(author="Pushkin", title="Eugeny Onegin", year=2001, count_pages=104, seller_id=seller_1.id)
     db_session.add_all([book])
     await db_session.flush()
-
-    r
 
     response = await async_client.get(f"/api/v1/seller/{seller_1.id}")
 
