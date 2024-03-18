@@ -1,0 +1,63 @@
+
+# Создаем продавца
+# POST http://localhost:8000/api/v1/seller/ HTTP/1.1
+# content-type: application/json
+
+# {
+#     "first_name": "Dmitry",
+#     "last_name": "Putilin",
+#     "email": "qew@qwe",
+#     "password": "123456"
+# }
+
+# Получаем одного продавца по его ИД
+# GET http://localhost:8000/api/v1/seller/1 HTTP/1.1
+# content-type: application/json
+
+# ##
+
+
+# Создаем книгу
+POST http://localhost:8000/api/v1/books/ HTTP/1.1
+content-type: application/json
+
+{
+    "title": "Wrong Code",
+    "author": "Robert Martin",
+    "pages": 228,
+    "year": 2007, 
+    "seller_id" : 1
+}
+
+###
+
+# Получаем список книг
+GET http://localhost:8000/api/v1/books/ HTTP/1.1
+content-type: application/json
+###
+
+# Получаем одну книгу по ее ИД
+GET http://localhost:8000/api/v1/books/2 HTTP/1.1
+content-type: application/json
+###
+
+# Обновляем поля в данных о книге
+PUT http://localhost:8000/api/v1/books/2 HTTP/1.1
+content-type: application/json
+
+{
+    "title": "Clean Code",
+    "author": "Robert Martin",
+    "count_pages": 10,
+    "year": 2007,
+    "id": 0,
+    "seller_id" : 1
+}
+
+###
+
+# Удаляем книгу
+DELETE http://localhost:8000/api/v1/books/2 HTTP/1.1
+content-type: application/json
+
+###
